@@ -106,12 +106,14 @@ void Keyboard_key(unsigned char key, int x, int y);
 void ground();
 void SetMaterial(GLfloat spec[], GLfloat amb[], GLfloat diff[], GLfloat shin[]);
 void base();
+void module();
 void first_arm();
 void second_arm();
 void third_arm();
 void finger_1();
 void finger_2();
 void roue();
+void roueScaleAndPlace();
 
 void move_camera(double speed);
 void rotate_camera(double speed);
@@ -231,6 +233,7 @@ glTranslatef(base_x,1,base_y);
 
 glRotatef(base_rot,0,1,0);
 base();
+module();
 //..
 
 
@@ -352,24 +355,26 @@ void Special_key(int key, int x, int y)
 
   switch (key)
   {
-
-
 	//3nd Arm
 
 	case GLUT_KEY_RIGHT:
-	third_x+=0.8f;
+	if(third_x <=45)
+		third_x+=0.8f;
 	break;
 
 	case GLUT_KEY_LEFT:
-	third_x-=0.8f;
+	if(third_x >=-45)
+		third_x-=0.8f;
 	break;
 
 	case GLUT_KEY_DOWN:
-	third_y+=0.8f;
+	if(third_y <=45)
+		third_y+=0.8f;
 	break;
 
 	case GLUT_KEY_UP:
-	third_y-=0.8f;
+	if(third_y >=-45)
+		third_y-=0.8f;
 	break;
 	
 //	case ...:
@@ -426,50 +431,60 @@ void Keyboard_key(unsigned char key, int x, int y)
 	// 1st Arm
 
 	case 'f':
-	first_x-=0.8f;
+	if(first_x >=-45)
+		first_x-=0.8f;
 	break;
 
 	case 'h':
-	first_x+=0.8f;
+	if(first_x <=45)
+		first_x+=0.8f;
 	break;
 
 	case 't':
-	first_y-=0.8f;
+	if(first_y >=-45)
+		first_y-=0.8f;
 	break;
 
 	case 'g':
-	first_y+=0.8f;
+	if(first_y <=45)
+		first_y+=0.8f;
 	break;
 
 	//2nd Arm
 
 	case 'j':
-	second_x-=0.8f;
+	if(second_x >=-45)
+		second_x-=0.8f;
 	break;
 
 	case 'l':
-	second_x+=0.8f;
+	if(second_x <=45)
+		second_x+=0.8f;
 	break;
 
 	case 'i':
-	second_y-=0.8f;
+	if(second_y >=-45)
+		second_y-=0.8f;
 	break;
 
 	case 'k':
+	if(second_y <=45)
 	second_y+=0.8f;
 	break;
 	
 	case ' ':
 	first_x = first_y = second_x = second_y = third_x = third_y = 0.0f;
-	base_rot = 90.0f;
+	base_rot = -90.0f;
 	break;
 	
 	
 	case 'c':
+	if(finger_x <=20)
 	finger_x+= 0.9f;
 	break;
 	
 	case 'w':
+	if(finger_x >=-20)
 	finger_x-= 0.9f;
 	break;
 
@@ -576,6 +591,26 @@ void base()
 }
 
 
+void module(){
+	glPushMatrix();
+
+		SetMaterial(mat_specularBLUE, mat_ambientBLUE, mat_diffuseBLUE, mat_shininessBLUE);
+
+		glTranslatef(2.0,2.0,0.0);                 // 1/2 hauteur du segment
+		glRotatef(90.0,0,1,0);
+		glPushMatrix();
+		glScalef(4.0,4.0,1.4);
+		glutSolidCube(1);
+		glPopMatrix();
+		
+		roueScaleAndPlace();
+		
+
+	glPopMatrix();
+	
+}
+
+
 void first_arm()
 {
 	glPushMatrix();
@@ -584,7 +619,7 @@ void first_arm()
 
 		axis_rotation(0.0, 0.0, axis);
 		axis_rotation(axis, 0.0, 0.0);
-		glTranslatef(0.0,2.0,0.0); // 1/2 hauteur du segment
+		glTranslatef(0.0,2.0,0.0);                 // 1/2 hauteur du segment
 
 		glPushMatrix();
 		glScalef(1.2,4.0,1.2);
@@ -739,6 +774,31 @@ void roue()
         gluDeleteQuadric(p);
 
 	glPopMatrix();
+}
+
+void roueScaleAndPlace(){ // Attention à l'ordre 
+	glTranslatef(0.0,0.0,1.0);
+		glRotatef(180.0,1,0,0);
+		
+		glPushMatrix();
+		glTranslatef(0.0,0.0,1.0);
+			roue();				
+			glScalef(0.0,1.5,0.0);				
+		glPopMatrix();
+		
+		glPushMatrix();
+		glTranslatef(0.0,0.0,1.0);
+			roue();				
+			glScalef(0.0,1.0,0.0);				
+		glPopMatrix();
+		
+		glPushMatrix();
+		glTranslatef(0.0,0.0,1.0);
+			roue();				
+			glScalef(0.0,0.6,0.0);				
+		glPopMatrix();
+		
+		
 }
 
 
