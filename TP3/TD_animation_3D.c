@@ -13,7 +13,7 @@
 #include <math.h>       // Header pour les fonctions mathèmatiques
 #include "TD_Animation_3D.h"
 
-
+// g++ -o TD_ANIMATION TD_animation_3D.c -lGL -lGLU -lglut
 /* code ASCII pour la touche escape*/
 #define ESCAPE 27
 
@@ -93,35 +93,26 @@ void DrawGLScene()
 // Dessin du robot
 //..
 	glPushMatrix();
+	glTranslatef(400,300,0);
 	
-// UpArm
-//..  
-		glTranslatef(10,Arm_Width,0);
-		glPushMatrix();		
-		glTranslatef(m_UpArm.trans.x,m_UpArm.trans.y,m_UpArm.trans.z);
-		glRotatef(m_UpArm.rot.z, 0,0,1);		
-		glCallList(UpArm_DLIST);	
-		glCallList(AXIS_DLIST);		
-		
-		glTranslatef(UpArm_Length,0,0);
-		glPushMatrix();
-		glTranslatef(m_LowArm.trans.x,m_LowArm.trans.y,m_LowArm.trans.z);
-		glRotatef(m_LowArm.rot.z,0,0,1);
-		glCallList(LowArm_DLIST);
-		glCallList(AXIS_DLIST);
-		
-		glTranslatef(LowArm_Length,0,0);
-		glCallList(AXIS_DLIST);
-		glPopMatrix();
-		glPopMatrix();
-
+// UpArm 	
+	glTranslatef(m_UpArm.trans.x,m_UpArm.trans.y,m_UpArm.trans.z);
+	glRotatef(m_UpArm.rot.z, 0,0,1);		
+	glCallList(UpArm_DLIST);	
+	glCallList(AXIS_DLIST);				
+//.. 
+// LowArm
+	glTranslatef(m_LowArm.trans.x,m_LowArm.trans.y,m_LowArm.trans.z);
+	glRotatef(m_LowArm.rot.z,0,0,1);
+	glCallList(LowArm_DLIST);
+	glCallList(AXIS_DLIST);
+//..
+// Effector
+  	glTranslatef(m_Effector.trans.x, m_Effector.trans.y, m_Effector.trans.z);
+	glCallList(AXIS_DLIST);
 	glPopMatrix();
 
-// LowArm
 //..
-  
-
-
 // Dessin des Keyframes
 //..
 
@@ -175,18 +166,16 @@ void processMouseActiveMotion(int x, int y)
 
 // Cinématique directe
 	case GLUT_MIDDLE_BUTTON : // Manipulation directe du segment UpArm
-		m_UpArm.rot.z = m_Grab_UPArm_Rot_Z + ROTATE_SPEED * (m_mousepos_x - x);
+		m_UpArm.rot.z = m_Grab_UPArm_Rot_Z + (float)ROTATE_SPEED * (m_mousepos_x - x);
 		//..
 		break;
 
 	case GLUT_RIGHT_BUTTON : // Manipulation directe du segment LowArm
-		m_LowArm.rot.z = m_Grab_LowArm_Rot_Z + ROTATE_SPEED * (m_mousepos_x - x);
+		m_LowArm.rot.z = m_Grab_LowArm_Rot_Z + (float)ROTATE_SPEED * (m_mousepos_x - x);
 		//..
 		break;
 	}
 	DrawGLScene();
-
-
 }
 
 
@@ -334,8 +323,8 @@ void InitBonesystem()
 //..
 	ResetBone(&m_Body, 0, 0, 0, 0, 0, 0);
 	ResetBone(&m_UpArm, 0, 0, 0, 0, 0, 0);
-	ResetBone(&m_LowArm, 0, 0, 0, 0, 0, 0);
-	ResetBone(&m_Effector, 0, 0, 0, 0, 0, 0);	
+	ResetBone(&m_LowArm, 0, 0, 0, UpArm_Length, 0, 0);
+	ResetBone(&m_Effector, 0, 0, 0, LowArm_Length, 0, 0);	
 }
 
 
@@ -343,32 +332,35 @@ void InitBonesystem()
 int ComputeIK(int x, int y)
 {
 /// Variables locales
-	float ex,ey;		// Vecteur déplacement
-	float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
-	float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
-	float tan1;		// TAN de ANGLE 1
-	
-	float d_carre;
-	float L1 = UpArm_Length;
-	float L2 = LowArm_Length;
-	
-	// Changement de repère (inversion de l'axe Y)
-	y = m_Height - y - 1;
+  float ex,ey;		// Vecteur déplacement
+  float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
+  float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
+  float tan1;		// TAN de ANGLE 1
 
-	//..	
-	d_carre = L1*L1 + L2*L2 + 2*L1*L2*cos2;
-	cos2 = (d_carre - L1*L1 - L2*L2)/(2*L1*L2);
-	sin2 = sin(acos(cos2));
-	tan1 = L2*sin2/(L1+L2*cos2);
-	
-	if(0){
-		return 0;
-	}
-	m_Grab_UPArm_Rot_Z = atan(y/x) - atan((L2*sin2)/(L1+L2*cos2));
-	
 
+// Changement de repère (inversion de l'axe Y)
+  y = m_Height - y - 1;
+
+//..
+  ex = x - m_UpArm.trans.x;
+  ey = y - m_UpArm.trans.y;
+   
+  cos2 = (pow(ex,2) + pow(ey,2) - pow(UpArm_Length,2) - pow(LowArm_Length,2) )/ (2*UpArm_Length*LowArm_Length);
+  
+  if (cos2 >2 && cos2 <-2) return 0; 
 	
-	return 1;
+  angle2 = acos (cos2);
+
+  sin2 = sin (angle2);
+
+  tan1 = (-(LowArm_Length*sin2*ex) + ((UpArm_Length+(LowArm_Length * cos2))*ey) ) / ((LowArm_Length*sin2*ey) + (UpArm_Length+(LowArm_Length*cos2))*ex);
+
+  angle1 = atan (tan1);
+	
+  m_UpArm.rot.z = RADTODEG(angle1);
+
+  m_LowArm.rot.z = RADTODEG(angle2);	
+  return 1;	
 }
 
 
@@ -494,8 +486,6 @@ const int NumKeysMinusOne = NumKeys-1;
  
 // Boucle de parcours des Keyframes
 //..
-
-
 
 
 }
