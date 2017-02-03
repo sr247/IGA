@@ -361,9 +361,7 @@ int ComputeIK(int x, int y)
 	sin2 = sin(acos(cos2));
 	tan1 = L2*sin2/(L1+L2*cos2);
 	
-	if(0){
-		return 0;
-	}
+
 	m_Grab_UPArm_Rot_Z = atan(y/x) - atan((L2*sin2)/(L1+L2*cos2));
 	
 
