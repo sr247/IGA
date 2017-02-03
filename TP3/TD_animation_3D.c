@@ -332,7 +332,6 @@ void InitBonesystem()
 int ComputeIK(int x, int y)
 {
 /// Variables locales
-<<<<<<< HEAD
 	float ex,ey;		// Vecteur déplacement
 	float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
 	float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
@@ -341,23 +340,6 @@ int ComputeIK(int x, int y)
 	float d_carre;
 	float L1 = UpArm_Length;
 	float L2 = LowArm_Length;
-	
-	// Changement de repère (inversion de l'axe Y)
-	y = m_Height - y - 1;
-
-	//..	
-	d_carre = L1*L1 + L2*L2 + 2*L1*L2*cos2;
-	cos2 = (d_carre - L1*L1 - L2*L2)/(2*L1*L2);
-	sin2 = sin(acos(cos2));
-	tan1 = L2*sin2/(L1+L2*cos2);
-	
-
-	m_Grab_UPArm_Rot_Z = atan(y/x) - atan((L2*sin2)/(L1+L2*cos2));
-=======
-  float ex,ey;		// Vecteur déplacement
-  float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
-  float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
-  float tan1;		// TAN de ANGLE 1
 
 
 // Changement de repère (inversion de l'axe Y)
@@ -370,7 +352,6 @@ int ComputeIK(int x, int y)
   cos2 = (pow(ex,2) + pow(ey,2) - pow(UpArm_Length,2) - pow(LowArm_Length,2) )/ (2*UpArm_Length*LowArm_Length);
   
   if (cos2 >2 && cos2 <-2) return 0; 
->>>>>>> ce931ed1c3de91efc6071c7276c6fc652565377a
 	
   angle2 = acos (cos2);
 
