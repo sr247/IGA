@@ -444,6 +444,11 @@ void keyPressed(unsigned char key, int x, int y)
 	/* .. */
 	exit(0);
     }
+    else if(key == GLUT_KEY_LEFT){
+	}else if(key == GLUT_KEY_RIGHT){
+	}else if(key == GLU_KEY_UP){
+	}else if(key == GLUT_KEY_DOWN){
+	}
 }
 
 /* .. */

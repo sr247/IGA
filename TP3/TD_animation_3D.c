@@ -332,10 +332,14 @@ void InitBonesystem()
 int ComputeIK(int x, int y)
 {
 /// Variables locales
-  float ex,ey;		// Vecteur déplacement
-  float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
-  float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
-  float tan1;		// TAN de ANGLE 1
+	float ex,ey;		// Vecteur déplacement
+	float sin2,cos2;	// SINE ry COSINE de l'ANGLE 2
+	float angle1,angle2;  // ANGLE 1 et 2 en RADIANS
+	float tan1;		// TAN de ANGLE 1
+	
+	float d_carre;
+	float L1 = UpArm_Length;
+	float L2 = LowArm_Length;
 
 
 // Changement de repère (inversion de l'axe Y)
