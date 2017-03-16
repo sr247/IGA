@@ -76,7 +76,7 @@ float up_down = 0.0, left_right = -1.57;
 float cam_pos_x = 0.0;
 float cam_pos_z = 30.0;
 float cam_look_x = 0.0;
-float cam_look_z = 0.0;
+float cam_look_y = 0.0;
 float vect_x = 0.0;
 float vect_z = 0.0;
 
@@ -86,7 +86,6 @@ double rot_1 = 0.1;
 double rot_2 = 0.1;
 double rot_3 = 0.1;
 
-float angle = 0.0f;
 float axis = 5.0f;
 
 /* code ASCII pour la touche escape*/
@@ -103,6 +102,7 @@ int window;
 
 void Special_key(int key, int x, int y);
 void Keyboard_key(unsigned char key, int x, int y);
+void Mouse_motion(int x, int y);
 void ground();
 void SetMaterial(GLfloat spec[], GLfloat amb[], GLfloat diff[], GLfloat shin[]);
 void base();
@@ -190,6 +190,8 @@ void DrawGLScene()
  gluLookAt(0.0,20.0,60.0,0.0,5.0,0.0,0.0,1.0,0.0); // 0.0,5.0,30.0
 
 // Navigation
+move_camera(0.0);
+rotate_camera(0.0);
 //...
 
 //////////////////////////////////////////////////
@@ -337,6 +339,10 @@ int main(int argc, char **argv)
 
   glutSpecialFunc(Special_key);
 
+  /* Spécification de la fontion special de gestion de la souris */
+  
+  glutPassiveMotionFunc(Mouse_motion);
+  
   /* Intitialisation des paramètres de l'affichage et de la fenêtre */
   InitGL(640, 480);
 
@@ -346,7 +352,12 @@ int main(int argc, char **argv)
   return 1;
 }
 
-
+void Mouse_motion(int x, int y){
+		
+	cam_look_x=x;
+	cam_look_y=y;
+	
+}
 
 void Special_key(int key, int x, int y)
 {
@@ -771,7 +782,7 @@ void roue()
 	p = gluNewQuadric();
 	gluCylinder(p, 1.0, 1.0,1.0, 10, 10);
 	gluDisk(p, 0.0,1.0, 10, 5);
-        gluDeleteQuadric(p);
+    gluDeleteQuadric(p);
 
 	glPopMatrix();
 }
@@ -780,22 +791,21 @@ void roueScaleAndPlace(){ // Attention à l'ordre
 	glTranslatef(0.0,0.0,1.0);
 		glRotatef(180.0,1,0,0);
 		
-		glPushMatrix();
-		glTranslatef(0.0,0.0,1.0);
-			roue();				
-			glScalef(0.0,1.5,0.0);				
+		glPushMatrix();			
+			glScalef(1.5,1.5,0.3);
+			roue();		
 		glPopMatrix();
 		
 		glPushMatrix();
-		glTranslatef(0.0,0.0,1.0);
-			roue();				
-			glScalef(0.0,1.0,0.0);				
+			glTranslatef(2.0,-1.5,0.0);			
+			glScalef(1.0,1.0,0.3);
+			roue();						
 		glPopMatrix();
 		
 		glPushMatrix();
-		glTranslatef(0.0,0.0,1.0);
+			glTranslatef(-1.2,-1.8,0.0);
+			glScalef(0.6,0.6,0.3);		
 			roue();				
-			glScalef(0.0,0.6,0.0);				
 		glPopMatrix();
 		
 		
@@ -805,7 +815,6 @@ void roueScaleAndPlace(){ // Attention à l'ordre
 void move_camera(double speed)
 {
 //..
-
 }
 
 

@@ -5,16 +5,17 @@
 // Mehdi AMMI - ammi@limsi.fr //
 ////////////////////////////////
 
+// g++ -o TDGL1 TD_GL_1.c -lGL -lGLU -lglut
 #include <GL/glut.h>    // Header pour GLUT
 #include <GL/gl.h>	// Header pour OpenGL
 #include <GL/glu.h>	// Header pour GLu
 #include <stdlib.h>     // Heard  Utilitaire général
 
-int seconds = 0;
+float seconds = 0.0f;
 
 /* Postion de la source de lumière */
 
-GLfloat light_position[] = { 1.0F,0.0F,1.0F,0.0F };
+GLfloat light_position[] = { 5.0F,3.0F,5.0F,0.0F };
 GLfloat lightambiant[] = { 1.0f,1.0f,1.0f,0.0};
 
 /* code ASCII pour la touche escape*/
@@ -88,7 +89,7 @@ void ReSizeGLScene(int Width, int Height)
 void DrawGLScene()
 {
 // ..
-  seconds++;
+  seconds+=0.3f;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
 
@@ -99,6 +100,8 @@ void DrawGLScene()
   glClearColor (0.0, 0.0, 0.0, 0.0); 
   glClear(GL_COLOR_BUFFER_BIT);
 
+
+	/* Q.1 */
   // Dessin des poins et segments
 //  glBegin();
 //  glEnd();
@@ -134,16 +137,20 @@ void DrawGLScene()
   // Dessin d'un référentiel
   glBegin(GL_LINES);
   glColor3f(1.0,0.0,0.0);
-  glVertex3f(0.0f, 0.0f, 0.0f);  
-  glVertex3f(5.0f, 0.0f, 0.0f);
+  glVertex3f(0.0f,0.0f,0.0f);  
+  glVertex3f(5.0f,0.0f,0.0f);
+  glNormal3f(0.0f,0.0f,1.0f);
   
   glColor3f(0.0,1.0,0.0);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 5.0f, 0.0f);
+  glVertex3f(0.0f,0.0f,0.0f);
+  glVertex3f(0.0f,5.0f,0.0f);
+  glNormal3f(1.0f,0.0f,1.0f);
   
   glColor3f(0.0,0.0,1.0);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 0.0f, 5.0f);
+  glVertex3f(0.0f,0.0f,0.0f);
+  glVertex3f(0.0f,0.0f,5.0f);
+  glNormal3f(1.0f,1.0f,0.0f);
+  
   glEnd();
   glFlush();
   
@@ -210,14 +217,16 @@ void DrawGLScene()
   //..
   
   
+  glRotatef(seconds,0,1,0);
   glTranslatef(-1.5,-1.5,-1.5);  
-  glRotatef(seconds,1,0,0);
-  
   
   glBegin(GL_QUADS);
   
   //Face 1  
-  glColor3f(1.0,1.0,0.0);
+  glColor3f(1.0f,0.0f,0.0f);
+  
+  glNormal3f(0.0f,0.0f,1.0f);
+  
   glVertex3f(0.0f, 0.0f, 0.0f);
   
   glVertex3f(3.0f,0.0f,0.0f);
@@ -225,6 +234,7 @@ void DrawGLScene()
   glVertex3f(3.0f,3.0f,0.0f);
  
   glVertex3f(0.0f,3.0f,0.0f);  
+  
   
   glEnd();
  
@@ -234,14 +244,17 @@ void DrawGLScene()
   
    glBegin(GL_QUADS);
 
-  glColor3f(1.0,0.0,0.0);
-  glVertex3f(0.0f, 0.0f, 0.0f);
+  glColor3f(0.0,1.0,0.0);
   
-  glVertex3f(0.0f,0.0f,3.0f);
+  glVertex3f(0.0f,0.0f,0.0f);
+  
+  glVertex3f(0.0f,3.0f,0.0f);
   
   glVertex3f(0.0f,3.0f,3.0f);
- 
-  glVertex3f(0.0f,3.0f,0.0f);  
+  
+  glVertex3f(0.0f,0.0f,3.0f);   
+  
+  glNormal3f(1.0f,0.0f,0.0f);
   
   glEnd();
  
@@ -254,13 +267,16 @@ void DrawGLScene()
    glBegin(GL_QUADS);
   
   glColor3f(0.0,0.0,1.0);
-  glVertex3f(0.0f, 0.0f, 3.0f);
+  
+  glVertex3f(0.0f,0.0f,3.0f);
   
   glVertex3f(0.0f,3.0f,3.0f);
     
   glVertex3f(3.0f,3.0f,3.0f);
 
   glVertex3f(3.0f,0.0f,3.0f);  
+  
+  glNormal3f(0.0f,0.0f,-1.0f);
   
   glEnd();
 
@@ -277,7 +293,8 @@ void DrawGLScene()
   glVertex3f(3.0f,3.0f,0.0f);
   
   glVertex3f(3.0f,3.0f,3.0f);  
-  glNormal3f(0.0,0.0,1.0);
+  
+  glNormal3f(-1.0f,0.0f,0.0f);
   
   glEnd();
 
@@ -285,7 +302,8 @@ void DrawGLScene()
   glBegin(GL_QUADS);
  
   // Face 5
-  glColor3f(0.0,1.0,0.0);
+  glColor3f(0.5,0.5,0.5);
+  
   glVertex3f(0.0f, 0.0f, 0.0f);
   
   glVertex3f(3.0f,0.0f,0.0f);
@@ -293,11 +311,12 @@ void DrawGLScene()
   glVertex3f(3.0f,0.0f,3.0f);
   
   glVertex3f(0.0f,0.0f,3.0f);
+  
+  glNormal3f(0.0f,1.0f,0.0f);
   //..
 
-
   // Face 6
-  
+  glColor3f(1.0,1.0,0.0);
   glVertex3f(0.0f, 3.0f, 0.0f);
   
   glVertex3f(3.0f,3.0f,0.0f);
@@ -305,6 +324,8 @@ void DrawGLScene()
   glVertex3f(3.0f,3.0f,3.0f);
   
   glVertex3f(0.0f,3.0f,3.0f);
+  
+  glNormal3f(0.0f,-1.0f,0.0f);
   //..
   
   glEnd();
